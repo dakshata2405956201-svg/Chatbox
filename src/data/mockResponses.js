@@ -324,7 +324,7 @@ export const accessoryRecommendations = [
   },
   {
     id: 25,
-    name: "VOYLLA Rose Gold Bracelet",
+    name: "VOYAGER Rose Gold Bracelet",
     price: "₹299",
     originalPrice: "₹499",
     discount: "40% OFF",
@@ -339,9 +339,9 @@ export const quickActions = [
   { title: "Wedding Outfit", icon: "Sparkles" },
   { title: "Farewell Outfit", icon: "GraduationCap" },
   { title: "Interview Look", icon: "Briefcase" },
-  { title: "Party Wear", icon: "Music" },
-  { title: "Casual College Look", icon: "BookOpen" },
-  { title: "Festive Wear", icon: "Sun" },
+  { title: "Party Wear", icon: "Crown" },
+  { title: "Casual College Look", icon: "Shirt" },
+  { title: "Festive Wear", icon: "Sparkles" },
 ];
 
 export const occasionPresets = [
@@ -349,7 +349,7 @@ export const occasionPresets = [
   { category: "Wedding", icon: "Sparkles", label: "Wedding" },
   { category: "Interview", icon: "Briefcase", label: "Interview" },
   { category: "Date Night", icon: "Heart", label: "Date Night" },
-  { category: "Casual", icon: "Smile", label: "Casual" },
-  { category: "Festive", icon: "Sun", label: "Festive" },
-  { category: "Party Wear", icon: "Music", label: "Party" },
+  { category: "Casual", icon: "Shirt", label: "Casual" },
+  { category: "Festive", icon: "Sparkles", label: "Festive" },
+  { category: "Party Wear", icon: "Crown", label: "Party" },
 ];

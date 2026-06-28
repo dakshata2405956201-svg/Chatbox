@@ -5,73 +5,18 @@ import {
   Sparkles,
   GraduationCap,
   Briefcase,
-  Music,
+  Shirt,
   BookOpen,
-  Sun,
   Heart,
   X,
   Moon,
   Sun as SunIcon,
   Heart as HeartIcon,
-  Smile
+  Crown
 } from 'lucide-react';
 import MessageBubble from './MessageBubble';
 import TypingIndicator from './TypingIndicator';
 import { fashionRecommendations, occasionPresets } from '../data/mockResponses';
-
-const GlassyBubbles = () => {
-  const bubbles = [
-    { size: 55, x: '8%', delay: 0, duration: 14, color: 'rgba(255, 63, 108, 0.10)' },
-    { size: 80, x: '22%', delay: 2, duration: 18, color: 'rgba(168, 130, 255, 0.08)' },
-    { size: 35, x: '40%', delay: 1, duration: 11, color: 'rgba(255, 200, 100, 0.10)' },
-    { size: 100, x: '58%', delay: 3.5, duration: 20, color: 'rgba(255, 63, 108, 0.07)' },
-    { size: 45, x: '72%', delay: 1.5, duration: 13, color: 'rgba(120, 180, 255, 0.09)' },
-    { size: 65, x: '88%', delay: 4, duration: 16, color: 'rgba(168, 130, 255, 0.07)' },
-    { size: 40, x: '15%', delay: 5, duration: 12, color: 'rgba(255, 200, 100, 0.08)' },
-    { size: 50, x: '50%', delay: 6, duration: 15, color: 'rgba(120, 180, 255, 0.07)' },
-    { size: 70, x: '35%', delay: 7, duration: 17, color: 'rgba(255, 63, 108, 0.06)' },
-    { size: 30, x: '80%', delay: 2.5, duration: 10, color: 'rgba(168, 130, 255, 0.10)' },
-  ];
-
-  return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-      {bubbles.map((b, i) => (
-        <motion.div
-          key={i}
-          initial={{ y: '115%', scale: 0.6, opacity: 0 }}
-          animate={{
-            y: '-15%',
-            x: [
-              `calc(${b.x} - 20px)`,
-              `calc(${b.x} + 30px)`,
-              `calc(${b.x} - 10px)`,
-              `calc(${b.x} + 15px)`,
-              b.x
-            ],
-            scale: [0.6, 1.0, 0.85, 1.1, 0.9],
-            opacity: [0, 0.6, 0.45, 0.7, 0]
-          }}
-          transition={{
-            duration: b.duration,
-            repeat: Infinity,
-            delay: b.delay,
-            ease: 'linear'
-          }}
-          style={{
-            width: b.size,
-            height: b.size,
-            left: b.x,
-            background: `radial-gradient(circle at 35% 25%, ${b.color.replace(/[\d.]+\)$/, '0.35)')}, ${b.color} 50%, transparent 75%)`,
-            border: '1px solid rgba(255, 255, 255, 0.45)',
-            boxShadow: `inset 0 -4px 12px rgba(255, 255, 255, 0.5), inset 0 4px 8px rgba(255, 255, 255, 0.3), 0 4px 20px ${b.color}`,
-            backdropFilter: 'blur(2px)',
-          }}
-          className="absolute rounded-none"
-        />
-      ))}
-    </div>
-  );
-};
 
 const ChatBox = ({ darkMode, toggleDarkMode }) => {
   const [input, setInput] = useState('');
@@ -101,16 +46,14 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
         return GraduationCap;
       case 'Briefcase':
         return Briefcase;
-      case 'Music':
-        return Music;
+      case 'Shirt':
+        return Shirt;
       case 'BookOpen':
         return BookOpen;
-      case 'Sun':
-        return Sun;
       case 'Heart':
         return Heart;
-      case 'Smile':
-        return Smile;
+      case 'Crown':
+        return Crown;
       default:
         return Sparkles;
     }
@@ -176,9 +119,6 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
 
   return (
     <div className="glass-panel flex flex-col h-full w-full relative">
-      {/* Animated Glassy Bubbles Background */}
-      <GlassyBubbles />
-
       {/* Chat Header */}
       <div className="px-6 py-4 border-b border-white/30 dark:border-neutral-700/50 bg-white/40 dark:bg-neutral-800/40 backdrop-blur-xl flex items-center justify-between flex-shrink-0 z-10">
         <div className="flex items-center gap-3">
@@ -189,8 +129,7 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
             <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 rounded-none border-2 border-white dark:border-neutral-800" />
           </div>
           <div>
-            <h3 className="text-base font-bold text-neutral-900 dark:text-white leading-tight">StyleMate AI</h3>
-            <p className="text-xs text-neutral-500 dark:text-neutral-400 font-medium">Your Personal Stylist</p>
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 font-medium">Online</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -329,7 +268,7 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                   placeholder="Describe your perfect outfit"
-                  className="w-full bg-white/70 dark:bg-neutral-700/70 backdrop-blur-sm border border-neutral-200 dark:border-neutral-600 rounded-none py-4 px-5 text-sm text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 focus:bg-white dark:focus:bg-neutral-700 focus:border-primary-300 dark:focus:border-primary-500 focus:ring-1 focus:ring-primary-200 dark:focus:ring-primary-500/20 outline-none transition-all shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]"
+                  className="w-full bg-white/70 dark:bg-neutral-700/70 backdrop-blur-sm border border-neutral-200 dark:border-neutral-600 rounded-none py-4 px-5 text-sm text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 focus:bg-white dark:focus:bg-neutral-700 focus:border-primary-300 dark:focus:border-primary-500 outline-none transition-all"
                 />
               </div>
 
