@@ -1,20 +1,35 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Send,
+  Sparkles,
+  GraduationCap,
+  Briefcase,
+  Music,
+  BookOpen,
+  Sun,
+  Heart,
+  X,
+  Moon,
+  Sun as SunIcon,
+  Heart as HeartIcon,
+  Smile
+} from 'lucide-react';
 import MessageBubble from './MessageBubble';
 import TypingIndicator from './TypingIndicator';
-import { fashionRecommendations } from '../data/mockResponses';
+import { fashionRecommendations, occasionPresets } from '../data/mockResponses';
 
 const GlassyBubbles = () => {
   const bubbles = [
-    { size: 55, x: '8%',  delay: 0,   duration: 14, color: 'rgba(255, 63, 108, 0.10)' },
-    { size: 80, x: '22%', delay: 2,   duration: 18, color: 'rgba(168, 130, 255, 0.08)' },
-    { size: 35, x: '40%', delay: 1,   duration: 11, color: 'rgba(255, 200, 100, 0.10)' },
+    { size: 55, x: '8%', delay: 0, duration: 14, color: 'rgba(255, 63, 108, 0.10)' },
+    { size: 80, x: '22%', delay: 2, duration: 18, color: 'rgba(168, 130, 255, 0.08)' },
+    { size: 35, x: '40%', delay: 1, duration: 11, color: 'rgba(255, 200, 100, 0.10)' },
     { size: 100, x: '58%', delay: 3.5, duration: 20, color: 'rgba(255, 63, 108, 0.07)' },
     { size: 45, x: '72%', delay: 1.5, duration: 13, color: 'rgba(120, 180, 255, 0.09)' },
-    { size: 65, x: '88%', delay: 4,   duration: 16, color: 'rgba(168, 130, 255, 0.07)' },
-    { size: 40, x: '15%', delay: 5,   duration: 12, color: 'rgba(255, 200, 100, 0.08)' },
-    { size: 50, x: '50%', delay: 6,   duration: 15, color: 'rgba(120, 180, 255, 0.07)' },
-    { size: 70, x: '35%', delay: 7,   duration: 17, color: 'rgba(255, 63, 108, 0.06)' },
+    { size: 65, x: '88%', delay: 4, duration: 16, color: 'rgba(168, 130, 255, 0.07)' },
+    { size: 40, x: '15%', delay: 5, duration: 12, color: 'rgba(255, 200, 100, 0.08)' },
+    { size: 50, x: '50%', delay: 6, duration: 15, color: 'rgba(120, 180, 255, 0.07)' },
+    { size: 70, x: '35%', delay: 7, duration: 17, color: 'rgba(255, 63, 108, 0.06)' },
     { size: 30, x: '80%', delay: 2.5, duration: 10, color: 'rgba(168, 130, 255, 0.10)' },
   ];
 
@@ -51,17 +66,21 @@ const GlassyBubbles = () => {
             boxShadow: `inset 0 -4px 12px rgba(255, 255, 255, 0.5), inset 0 4px 8px rgba(255, 255, 255, 0.3), 0 4px 20px ${b.color}`,
             backdropFilter: 'blur(2px)',
           }}
-          className="absolute rounded-full"
+          className="absolute rounded-none"
         />
       ))}
     </div>
   );
 };
 
-const ChatBox = () => {
+const ChatBox = ({ darkMode, toggleDarkMode }) => {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [shortlistedItems, setShortlistedItems] = useState([]);
+  const [showShortlist, setShowShortlist] = useState(false);
+  const [minBudget, setMinBudget] = useState(0);
+  const [maxBudget, setMaxBudget] = useState(10000);
   const messagesContainerRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -74,6 +93,29 @@ const ChatBox = () => {
     scrollToBottom();
   }, [messages, isTyping]);
 
+  const getIconForPreset = (iconName) => {
+    switch (iconName) {
+      case 'Sparkles':
+        return Sparkles;
+      case 'GraduationCap':
+        return GraduationCap;
+      case 'Briefcase':
+        return Briefcase;
+      case 'Music':
+        return Music;
+      case 'BookOpen':
+        return BookOpen;
+      case 'Sun':
+        return Sun;
+      case 'Heart':
+        return Heart;
+      case 'Smile':
+        return Smile;
+      default:
+        return Sparkles;
+    }
+  };
+
   const handleSend = (content) => {
     const messageContent = content || input;
     if (!messageContent.trim()) return;
@@ -84,26 +126,36 @@ const ChatBox = () => {
     setIsTyping(true);
 
     setTimeout(() => {
-      let aiResponse = { 
-        role: 'ai', 
-        content: "That sounds like a great occasion! Based on your request, I've curated a premium look for you.",
+      let aiResponse = {
+        role: 'ai',
+        content: "I'm here to help you find the perfect outfit. Let me put together some amazing looks for you.",
         recommendations: [],
-        stylingTip: ""
+        stylingTip: "",
+        followUpSuggestions: []
       };
 
       const lowerContent = messageContent.toLowerCase();
-      if (lowerContent.includes('farewell')) {
-        const data = fashionRecommendations.find(r => r.category === 'Farewell');
-        aiResponse.recommendations = data.outfit;
-        aiResponse.stylingTip = data.stylingTip;
-        aiResponse.content = "For your farewell, you want something sophisticated yet memorable. Here's a curated satin ensemble that's trending right now:";
-      } else if (lowerContent.includes('interview')) {
-        const data = fashionRecommendations.find(r => r.category === 'Interview');
-        aiResponse.recommendations = data.outfit;
-        aiResponse.stylingTip = data.stylingTip;
-        aiResponse.content = "A professional first impression is key. I recommend this clean, minimalist corporate look:";
+      const matchedRecommendation = fashionRecommendations.find(rec =>
+        lowerContent.includes(rec.category.toLowerCase())
+      );
+
+      if (matchedRecommendation) {
+        aiResponse = {
+          role: 'ai',
+          content: `Perfect choice for ${matchedRecommendation.category}. Here are some curated picks just for you.`,
+          recommendations: matchedRecommendation.outfit,
+          stylingTip: matchedRecommendation.stylingTip,
+          followUpSuggestions: matchedRecommendation.followUpSuggestions
+        };
       } else {
-        aiResponse.content = "I'm currently specialized in Farewell and Interview looks for this demo, but generally, I'd suggest something elegant! Would you like to see a Farewell or Interview look?";
+        const defaultRec = fashionRecommendations[0];
+        aiResponse = {
+          role: 'ai',
+          content: "Great question. Here are some stylish recommendations to inspire you.",
+          recommendations: defaultRec.outfit,
+          stylingTip: defaultRec.stylingTip,
+          followUpSuggestions: defaultRec.followUpSuggestions
+        };
       }
 
       setMessages(prev => [...prev, aiResponse]);
@@ -111,107 +163,265 @@ const ChatBox = () => {
     }, 1500);
   };
 
+  const handleToggleShortlist = (item) => {
+    setShortlistedItems(prev => {
+      const isShortlisted = prev.some(i => i.id === item.id);
+      if (isShortlisted) {
+        return prev.filter(i => i.id !== item.id);
+      } else {
+        return [...prev, item];
+      }
+    });
+  };
+
   return (
-    <div className="glass-panel rounded-3xl overflow-hidden flex flex-col h-[650px] max-w-[1000px] mx-auto w-full relative">
+    <div className="glass-panel flex flex-col h-full w-full relative">
       {/* Animated Glassy Bubbles Background */}
       <GlassyBubbles />
 
       {/* Chat Header */}
-      <div className="px-6 py-4 border-b border-white/30 bg-white/40 backdrop-blur-xl flex items-center justify-between flex-shrink-0 z-10">
+      <div className="px-6 py-4 border-b border-white/30 dark:border-neutral-700/50 bg-white/40 dark:bg-neutral-800/40 backdrop-blur-xl flex items-center justify-between flex-shrink-0 z-10">
         <div className="flex items-center gap-3">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+          <div className="relative">
+            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-none flex items-center justify-center shadow-md">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 rounded-none border-2 border-white dark:border-neutral-800" />
+          </div>
           <div>
-            <h3 className="text-sm font-bold text-textPrimary leading-none">StyleMate AI Assistant</h3>
-            <p className="text-[10px] text-textSecondary mt-1 font-medium">Active styling session</p>
+            <h3 className="text-base font-bold text-neutral-900 dark:text-white leading-tight">StyleMate AI</h3>
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 font-medium">Your Personal Stylist</p>
           </div>
         </div>
-        {messages.length > 0 && (
-          <button 
-            onClick={() => setMessages([])}
-            className="text-xs font-bold text-textSecondary hover:text-primary transition-colors px-3 py-1.5 rounded-xl hover:bg-white/40 uppercase tracking-wider text-[10px]"
+        <div className="flex items-center gap-2">
+          <button
+            onClick={toggleDarkMode}
+            className="p-2.5 rounded-none bg-white/50 dark:bg-neutral-700/50 text-neutral-700 dark:text-neutral-300 hover:bg-white dark:hover:bg-neutral-700 transition-all"
           >
-            Clear Chat
+            {darkMode ? <SunIcon className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
-        )}
+          <button
+            onClick={() => setShowShortlist(!showShortlist)}
+            className="relative p-2.5 rounded-none bg-white/50 dark:bg-neutral-700/50 text-neutral-700 dark:text-neutral-300 hover:bg-white dark:hover:bg-neutral-700 transition-all"
+          >
+            <HeartIcon className="w-5 h-5" />
+            {shortlistedItems.length > 0 && (
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary-500 text-white text-xs font-bold rounded-none flex items-center justify-center">
+                {shortlistedItems.length}
+              </span>
+            )}
+          </button>
+          {messages.length > 0 && (
+            <button
+              onClick={() => setMessages([])}
+              className="text-xs font-bold text-neutral-500 dark:text-neutral-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors px-3 py-2 rounded-none hover:bg-white/50 dark:hover:bg-neutral-700/50 uppercase tracking-wider"
+            >
+              New Chat
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Chat Messages / Empty State */}
-      <div 
-        ref={messagesContainerRef}
-        className="flex-1 overflow-y-auto px-6 py-6 space-y-6 scroll-smooth bg-transparent z-10"
-      >
+      {/* Main Content */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Chat Messages */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <div
+            ref={messagesContainerRef}
+            className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 space-y-6 scroll-smooth bg-transparent z-10"
+          >
+            <AnimatePresence>
+              {messages.length === 0 ? (
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  className="h-full flex flex-col items-center justify-center text-center max-w-2xl mx-auto space-y-6 py-8"
+                >
+                  <div className="w-16 h-16 glass-panel-strong rounded-none flex items-center justify-center z-10 shadow-lg">
+                    <Sparkles className="text-primary-500 w-8 h-8" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-neutral-900 dark:text-white">Discover Your Style</h3>
+                    <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2 leading-relaxed">
+                      Tell me about the occasion or style you're looking for, and I'll curate the perfect look for you.
+                    </p>
+                  </div>
+
+                  {/* Quick Actions */}
+                  <div className="w-full space-y-3">
+                    <p className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                      Pick an occasion
+                    </p>
+                    <div className="flex flex-wrap gap-2 justify-center">
+                      {occasionPresets.map((preset, idx) => {
+                        const Icon = getIconForPreset(preset.icon);
+                        return (
+                          <motion.button
+                            key={idx}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => handleSend(`Style a ${preset.category} outfit`)}
+                            className="glass-panel-subtle px-4 py-3 rounded-none text-xs font-semibold text-neutral-700 dark:text-neutral-200 hover:bg-white dark:hover:bg-neutral-700 hover:shadow-md transition-all flex items-center gap-2 border border-neutral-200 dark:border-neutral-700"
+                          >
+                            <Icon className="w-4 h-4" />
+                            {preset.label}
+                          </motion.button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Budget Slider */}
+                  <div className="w-full glass-panel-subtle rounded-none p-4 border border-neutral-200 dark:border-neutral-700">
+                    <p className="text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-3 flex items-center gap-2">
+                      Budget Range
+                      <span className="ml-auto text-primary-500 font-bold">
+                        ₹{minBudget.toLocaleString()} - ₹{maxBudget.toLocaleString()}
+                      </span>
+                    </p>
+                    <div className="space-y-2">
+                      <input
+                        type="range"
+                        min="0"
+                        max="20000"
+                        step="500"
+                        value={minBudget}
+                        onChange={(e) => setMinBudget(Number(e.target.value))}
+                        className="w-full h-2 bg-neutral-200 dark:bg-neutral-700 rounded-none appearance-none cursor-pointer accent-primary-500"
+                      />
+                      <input
+                        type="range"
+                        min="0"
+                        max="20000"
+                        step="500"
+                        value={maxBudget}
+                        onChange={(e) => setMaxBudget(Number(e.target.value))}
+                        className="w-full h-2 bg-neutral-200 dark:bg-neutral-700 rounded-none appearance-none cursor-pointer accent-primary-500"
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+              ) : (
+                <div className="space-y-6 pb-4">
+                  {messages.map((msg, idx) => (
+                    <MessageBubble
+                      key={idx}
+                      message={msg}
+                      onToggleShortlist={handleToggleShortlist}
+                      shortlistedItems={shortlistedItems}
+                      onFollowUp={handleSend}
+                    />
+                  ))}
+                  {isTyping && <TypingIndicator />}
+                </div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Input Area */}
+          <div className="px-4 sm:px-6 py-4 border-t border-white/30 dark:border-neutral-700/50 bg-white/40 dark:bg-neutral-800/40 backdrop-blur-xl flex-shrink-0 z-10">
+            <div className="flex items-center gap-3">
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                  placeholder="Describe your perfect outfit"
+                  className="w-full bg-white/70 dark:bg-neutral-700/70 backdrop-blur-sm border border-neutral-200 dark:border-neutral-600 rounded-none py-4 px-5 text-sm text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 focus:bg-white dark:focus:bg-neutral-700 focus:border-primary-300 dark:focus:border-primary-500 focus:ring-1 focus:ring-primary-200 dark:focus:ring-primary-500/20 outline-none transition-all shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]"
+                />
+              </div>
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleSend()}
+                disabled={!input.trim()}
+                className={`h-12 w-12 rounded-none transition-all flex items-center justify-center flex-shrink-0 ${
+                  input.trim()
+                    ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/25 hover:from-primary-600 hover:to-primary-700'
+                    : 'bg-neutral-200 dark:bg-neutral-700 text-neutral-400 dark:text-neutral-500 cursor-not-allowed'
+                }`}
+              >
+                <Send className="w-5 h-5" />
+              </motion.button>
+            </div>
+          </div>
+        </div>
+
+        {/* Shortlist Sidebar */}
         <AnimatePresence>
-          {messages.length === 0 ? (
-            <motion.div 
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              className="h-full flex flex-col items-center justify-center text-center max-w-sm mx-auto space-y-6 py-8"
+          {showShortlist && (
+            <motion.div
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: '320px', opacity: 1 }}
+              exit={{ width: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="bg-white/80 dark:bg-neutral-800/80 backdrop-blur-xl border-l border-neutral-200 dark:border-neutral-700 flex-shrink-0 overflow-hidden"
             >
-              <div className="w-14 h-14 glass-panel-strong rounded-[20px] flex items-center justify-center z-10">
-                <span className="text-primary text-xl font-extrabold tracking-tight">SM</span>
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-textPrimary">Your Personal AI Stylist</h3>
-                <p className="text-xs text-textSecondary mt-2 leading-relaxed">
-                  Describe the outfit or aesthetic you are looking for. Click a quick starter below to begin styling.
-                </p>
-              </div>
-              
-              <div className="w-full space-y-2">
-                <button 
-                  onClick={() => handleSend("Style a Farewell Outfit")}
-                  className="w-full glass-panel-subtle text-left px-5 py-3 rounded-2xl text-xs font-semibold text-textPrimary hover:bg-white/50 hover:shadow-sm transition-all"
-                >
-                  Style a Farewell Outfit
-                </button>
-                <button 
-                  onClick={() => handleSend("Style an Interview Look")}
-                  className="w-full glass-panel-subtle text-left px-5 py-3 rounded-2xl text-xs font-semibold text-textPrimary hover:bg-white/50 hover:shadow-sm transition-all"
-                >
-                  Style an Interview Look
-                </button>
+              <div className="h-full flex flex-col">
+                <div className="p-4 border-b border-neutral-200 dark:border-neutral-700 flex items-center justify-between">
+                  <h3 className="font-bold text-neutral-900 dark:text-white flex items-center gap-2">
+                    <Heart className="w-5 h-5 text-primary-500" />
+                    Shortlist
+                  </h3>
+                  <button
+                    onClick={() => setShowShortlist(false)}
+                    className="p-1.5 rounded-none hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+                  >
+                    <X className="w-5 h-5 text-neutral-500 dark:text-neutral-400" />
+                  </button>
+                </div>
+
+                <div className="flex-1 overflow-y-auto p-4">
+                  {shortlistedItems.length === 0 ? (
+                    <div className="h-full flex flex-col items-center justify-center text-center text-neutral-500 dark:text-neutral-400 space-y-2">
+                      <Heart className="w-12 h-12 opacity-30" />
+                      <p className="text-sm">No items shortlisted yet</p>
+                      <p className="text-xs">Click the heart icon on items to save them here</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {shortlistedItems.map((item) => (
+                        <div
+                          key={item.id}
+                          className="flex gap-3 p-3 bg-neutral-50 dark:bg-neutral-700/50 rounded-none border border-neutral-200 dark:border-neutral-600"
+                        >
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-16 h-20 object-cover rounded-none"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-sm font-semibold text-neutral-900 dark:text-white line-clamp-2">
+                              {item.name}
+                            </h4>
+                            <p className="text-primary-500 font-bold text-sm mt-1">{item.price}</p>
+                          </div>
+                          <button
+                            onClick={() => handleToggleShortlist(item)}
+                            className="self-start p-1.5 rounded-none hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors"
+                          >
+                            <X className="w-4 h-4 text-neutral-500 dark:text-neutral-400" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {shortlistedItems.length >= 2 && (
+                  <div className="p-4 border-t border-neutral-200 dark:border-neutral-700">
+                    <button className="w-full bg-gradient-to-br from-primary-500 to-primary-600 text-white py-3 rounded-none font-bold text-sm hover:from-primary-600 hover:to-primary-700 transition-all shadow-md">
+                      Compare {shortlistedItems.length} Items
+                    </button>
+                  </div>
+                )}
               </div>
             </motion.div>
-          ) : (
-            <div className="space-y-6">
-              {messages.map((msg, index) => (
-                <MessageBubble key={index} message={msg} />
-              ))}
-              {isTyping && <TypingIndicator />}
-            </div>
           )}
         </AnimatePresence>
-      </div>
-
-      {/* Input Area */}
-      <div className="px-6 py-4 border-t border-white/30 bg-white/40 backdrop-blur-xl flex-shrink-0 z-10">
-        <div className="flex items-center gap-3">
-          <div className="relative flex-1">
-            <input 
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="Describe the occasion, color preferences, or budget..."
-              className="w-full bg-white/50 backdrop-blur-sm border border-white/40 rounded-2xl py-4 px-6 text-sm focus:bg-white/70 focus:border-primary/30 focus:ring-1 focus:ring-primary/10 outline-none transition-all shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]"
-            />
-          </div>
-
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => handleSend()}
-            disabled={!input.trim()}
-            className={`h-12 px-6 rounded-2xl text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center flex-shrink-0
-              ${input.trim() ? 'bg-primary text-white shadow-md shadow-primary/25 hover:bg-opacity-95' : 'bg-white/40 text-gray-400 cursor-not-allowed border border-white/40'}`}
-          >
-            Send
-          </motion.button>
-        </div>
-        <p className="text-[9px] text-textSecondary text-center mt-3 uppercase tracking-[0.24em] font-bold opacity-50">
-          Powered by StyleMate Generative AI
-        </p>
       </div>
     </div>
   );
