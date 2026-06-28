@@ -1,4 +1,4 @@
-# StyleMate AI - Your Personal AI Fashion Stylist 👗✨
+# StyleMate AI - Your Personal AI Fashion Stylist 
 
 StyleMate AI is a premium fashion-tech assistant designed to integrate seamlessly into the fashion ecosystem. Inspired by industry leaders like Myntra, Zara, and Apple, it offers a sophisticated, minimalist interface for personalized outfit recommendations.
 
