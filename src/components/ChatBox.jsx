@@ -10,9 +10,9 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
   const [isTyping, setIsTyping] = useState(false);
   const [shortlistedItems, setShortlistedItems] = useState([]);
   const [showShortlist, setShowShortlist] = useState(false);
+  const [showOccasions, setShowOccasions] = useState(false);
   const [activeOccasion, setActiveOccasion] = useState(occasionPresets[0]?.category || 'Farewell');
-  const [minBudget, setMinBudget] = useState(0);
-  const [maxBudget, setMaxBudget] = useState(10000);
+  const [budgetValue, setBudgetValue] = useState(10000);
   const messagesContainerRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -89,7 +89,7 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
       <div className="px-6 py-4 border-b border-white/6 bg-slate-900/95 flex items-center justify-between flex-shrink-0 z-10">
         <div className="flex items-center gap-3">
           <div>
-            <p className="text-sm font-semibold tracking-[0.14em] uppercase text-white">StyleMate AI</p>
+            <p className="text-sm font-semibold tracking-[0.14em] uppercase text-white">AI Workspace</p>
             <p className="text-[11px] text-white/50 uppercase tracking-[0.28em] mt-1">Online</p>
           </div>
         </div>
@@ -123,70 +123,87 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -15 }}
-                  className="h-full flex flex-col items-center justify-center text-center w-full max-w-none space-y-5 py-6"
+                  className="h-full w-full max-w-none py-2"
                 >
-                  <div className="w-full glass-panel-subtle border border-white/6 rounded-lg px-4 py-3">
-                    <div className="grid grid-cols-7 gap-2 w-full">
-                      {occasionPresets.map((preset, idx) => (
-                        <motion.button
-                          key={idx}
-                          whileHover={{ scale: 1.03 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={() => {
-                            setActiveOccasion(preset.category);
-                            handleSend(`Style a ${preset.category} outfit`);
-                          }}
-                          className={`w-full px-2 py-2 rounded-lg text-[10px] sm:text-xs font-semibold transition-all border whitespace-nowrap min-w-0 text-center ${
-                            activeOccasion === preset.category
-                              ? 'bg-primary-500 text-white border-primary-400/20 shadow-[0_10px_24px_rgba(244,114,182,0.25)]'
-                              : 'bg-slate-900/80 text-white/75 border-white/8 hover:bg-slate-800 hover:text-white'
-                          }`}
-                        >
-                          {preset.label}
-                        </motion.button>
-                      ))}
+                  <div className="text-center lg:text-left">
+                    <div className="mb-4 flex justify-center lg:justify-start">
+                      <button
+                        type="button"
+                        onClick={() => setShowOccasions((prev) => !prev)}
+                        className="rounded-full border border-white/8 bg-white/4 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/70 transition-all hover:bg-white/8 hover:text-white"
+                      >
+                        {showOccasions ? 'Hide occasions' : 'Pick an occasion'}
+                      </button>
                     </div>
-                  </div>
 
-                  <div>
-                    <h3 className="font-display-serif text-4xl sm:text-5xl font-semibold tracking-tight text-white leading-none">
-                      Discover Your Style
-                    </h3>
-                    <p className="mx-auto mt-3 max-w-2xl text-sm sm:text-base text-white/58 leading-7">
-                      Tell me about the occasion, preferred style, and budget, and I'll curate outfits tailored just for you.
-                    </p>
-                  </div>
+                    <div className="grid gap-5 lg:grid-cols-[260px_minmax(0,1fr)] lg:items-start">
+                      <AnimatePresence initial={false}>
+                        {showOccasions && (
+                          <motion.div
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -10 }}
+                            className="glass-panel-subtle border border-white/6 rounded-lg px-4 py-4 text-left lg:sticky lg:top-4"
+                          >
+                            <div className="mb-4">
+                              <p className="text-[10px] uppercase tracking-[0.28em] text-white/45">Pick an occasion</p>
+                              <p className="mt-1 text-sm text-white/55">Choose one style context</p>
+                            </div>
 
-                  {/* Budget Slider */}
-                  <div className="w-full glass-panel-subtle rounded-lg p-5 border border-white/6">
-                    <div className="flex items-center justify-between gap-4 mb-4">
+                            <div className="flex flex-col gap-2">
+                              {occasionPresets.map((preset, idx) => (
+                                <motion.button
+                                  key={idx}
+                                  whileHover={{ scale: 1.03 }}
+                                  whileTap={{ scale: 0.98 }}
+                                  onClick={() => {
+                                    setActiveOccasion(preset.category);
+                                    handleSend(`Style a ${preset.category} outfit`);
+                                    setShowOccasions(false);
+                                  }}
+                                  className={`w-full rounded-lg px-4 py-3 text-[10px] sm:text-xs font-semibold transition-all border text-left ${
+                                    activeOccasion === preset.category
+                                      ? 'bg-primary-500 text-white border-primary-400/20 shadow-[0_10px_24px_rgba(244,114,182,0.25)]'
+                                      : 'bg-white/4 text-white/72 border-white/8 hover:bg-white/8 hover:text-white'
+                                  }`}
+                                >
+                                  {preset.label}
+                                </motion.button>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+
                       <div>
-                        <p className="text-[10px] uppercase tracking-[0.28em] text-white/45">Budget Range</p>
-                        <p className="mt-1 text-sm text-white/65">Set your preferred price window</p>
+                      <h3 className="font-display-serif text-4xl sm:text-5xl font-semibold tracking-tight text-white leading-none">
+                        Discover Your Style
+                      </h3>
+                      <p className="mx-auto lg:mx-0 mt-3 max-w-2xl text-sm sm:text-base text-white/58 leading-7">
+                        Share the occasion, preferred style, and budget, and I’ll curate refined outfit recommendations tailored to you.
+                      </p>
+
+                      {/* Budget Controls */}
+                      <div className="mt-5 max-w-xl">
+                        <div className="flex items-center justify-between gap-4 mb-2">
+                          <p className="text-[10px] uppercase tracking-[0.28em] text-white/45">Budget Range</p>
+                          <p className="text-sm font-semibold text-primary-400">
+                            Up to ₹{budgetValue.toLocaleString()}
+                          </p>
+                        </div>
+
+                        <input
+                          type="range"
+                          min="0"
+                          max="50000"
+                          step="500"
+                          value={budgetValue}
+                          onChange={(e) => setBudgetValue(Number(e.target.value))}
+                          className="budget-range w-full"
+                          aria-label="Budget range"
+                        />
                       </div>
-                      <span className="text-sm font-semibold text-primary-400">
-                        ₹{minBudget.toLocaleString()} - ₹{maxBudget.toLocaleString()}
-                      </span>
                     </div>
-                    <div className="space-y-3">
-                      <input
-                        type="range"
-                        min="0"
-                        max="20000"
-                        step="500"
-                        value={minBudget}
-                        onChange={(e) => setMinBudget(Number(e.target.value))}
-                        className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary-500"
-                      />
-                      <input
-                        type="range"
-                        min="0"
-                        max="20000"
-                        step="500"
-                        value={maxBudget}
-                        onChange={(e) => setMaxBudget(Number(e.target.value))}
-                        className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary-500"
-                      />
                     </div>
                   </div>
                 </motion.div>

@@ -53,7 +53,7 @@ const RecommendationCard = ({ item, onToggleShortlist, isShortlisted }) => {
         {/* Wishlist Button */}
         <button
           onClick={() => onToggleShortlist && onToggleShortlist(item)}
-          className={`absolute top-3 right-3 px-3 py-2 rounded-lg flex items-center justify-center transition-all duration-200 text-xs font-semibold uppercase tracking-[0.14em] ${
+          className={`absolute bottom-3 right-3 px-3 py-2 rounded-lg flex items-center justify-center transition-all duration-200 text-xs font-semibold uppercase tracking-[0.14em] ${
             isShortlisted
               ? 'bg-primary-500 text-white shadow-[0_10px_24px_rgba(244,114,182,0.25)]'
               : 'bg-white/8 text-white/75 border border-white/8 hover:bg-white/12'

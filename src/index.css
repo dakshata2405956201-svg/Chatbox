@@ -9,7 +9,7 @@
 
   body {
     @apply antialiased;
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Baskerville', 'Baskerville Old Face', 'Hoefler Text', 'Libre Baskerville', Georgia, serif;
     min-height: 100vh;
     color: #f8fafc;
   }
@@ -112,4 +112,44 @@ body.dark ::-webkit-scrollbar-thumb:hover {
 body.dark ::selection {
   background: rgba(244, 114, 182, 0.28);
   color: #ffffff;
+}
+
+.budget-range {
+  background: transparent;
+}
+
+.budget-range:focus {
+  outline: none;
+}
+
+.budget-range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, rgba(15, 23, 42, 0.9), rgba(244, 114, 182, 0.25));
+}
+
+.budget-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  background: #f472b6;
+  border: 2px solid #ffffff;
+  margin-top: -6px;
+  box-shadow: 0 8px 18px rgba(244, 114, 182, 0.28);
+}
+
+.budget-range::-moz-range-track {
+  height: 6px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, rgba(15, 23, 42, 0.9), rgba(244, 114, 182, 0.25));
+}
+
+.budget-range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  background: #f472b6;
+  border: 2px solid #ffffff;
+  box-shadow: 0 8px 18px rgba(244, 114, 182, 0.28);
 }
