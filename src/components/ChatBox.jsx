@@ -1,19 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Send,
-  Sparkles,
-  GraduationCap,
-  Briefcase,
-  Shirt,
-  BookOpen,
-  Heart,
-  X,
-  Moon,
-  Sun as SunIcon,
-  Heart as HeartIcon,
-  Crown
-} from 'lucide-react';
 import MessageBubble from './MessageBubble';
 import TypingIndicator from './TypingIndicator';
 import { fashionRecommendations, occasionPresets } from '../data/mockResponses';
@@ -24,6 +10,7 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
   const [isTyping, setIsTyping] = useState(false);
   const [shortlistedItems, setShortlistedItems] = useState([]);
   const [showShortlist, setShowShortlist] = useState(false);
+  const [activeOccasion, setActiveOccasion] = useState(occasionPresets[0]?.category || 'Farewell');
   const [minBudget, setMinBudget] = useState(0);
   const [maxBudget, setMaxBudget] = useState(10000);
   const messagesContainerRef = useRef(null);
@@ -37,27 +24,6 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
   useEffect(() => {
     scrollToBottom();
   }, [messages, isTyping]);
-
-  const getIconForPreset = (iconName) => {
-    switch (iconName) {
-      case 'Sparkles':
-        return Sparkles;
-      case 'GraduationCap':
-        return GraduationCap;
-      case 'Briefcase':
-        return Briefcase;
-      case 'Shirt':
-        return Shirt;
-      case 'BookOpen':
-        return BookOpen;
-      case 'Heart':
-        return Heart;
-      case 'Crown':
-        return Crown;
-      default:
-        return Sparkles;
-    }
-  };
 
   const handleSend = (content) => {
     const messageContent = content || input;
@@ -120,44 +86,26 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
   return (
     <div className="glass-panel flex flex-col h-full w-full relative">
       {/* Chat Header */}
-      <div className="px-6 py-4 border-b border-white/30 dark:border-neutral-700/50 bg-white/40 dark:bg-neutral-800/40 backdrop-blur-xl flex items-center justify-between flex-shrink-0 z-10">
+      <div className="px-6 py-4 border-b border-white/6 bg-slate-900/95 flex items-center justify-between flex-shrink-0 z-10">
         <div className="flex items-center gap-3">
-          <div className="relative">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-none flex items-center justify-center shadow-md">
-              <Sparkles className="w-5 h-5 text-white" />
-            </div>
-            <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 rounded-none border-2 border-white dark:border-neutral-800" />
-          </div>
           <div>
-            <p className="text-xs text-neutral-500 dark:text-neutral-400 font-medium">Online</p>
+            <p className="text-sm font-semibold tracking-[0.14em] uppercase text-white">StyleMate AI</p>
+            <p className="text-[11px] text-white/50 uppercase tracking-[0.28em] mt-1">Online</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={toggleDarkMode}
-            className="p-2.5 rounded-none bg-white/50 dark:bg-neutral-700/50 text-neutral-700 dark:text-neutral-300 hover:bg-white dark:hover:bg-neutral-700 transition-all"
+            onClick={() => setShowShortlist(!showShortlist)}
+            className="px-3 py-2 rounded-lg bg-white/5 text-xs font-semibold uppercase tracking-[0.2em] text-white/75 border border-white/8 hover:bg-white/10 transition-all"
           >
-            {darkMode ? <SunIcon className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            Saved {shortlistedItems.length > 0 ? `(${shortlistedItems.length})` : ''}
           </button>
           <button
-            onClick={() => setShowShortlist(!showShortlist)}
-            className="relative p-2.5 rounded-none bg-white/50 dark:bg-neutral-700/50 text-neutral-700 dark:text-neutral-300 hover:bg-white dark:hover:bg-neutral-700 transition-all"
+            onClick={() => setMessages([])}
+            className="px-3 py-2 rounded-lg bg-primary-500 text-xs font-semibold uppercase tracking-[0.2em] text-white shadow-[0_10px_24px_rgba(244,114,182,0.22)] hover:bg-primary-400 transition-all"
           >
-            <HeartIcon className="w-5 h-5" />
-            {shortlistedItems.length > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary-500 text-white text-xs font-bold rounded-none flex items-center justify-center">
-                {shortlistedItems.length}
-              </span>
-            )}
+            New Chat
           </button>
-          {messages.length > 0 && (
-            <button
-              onClick={() => setMessages([])}
-              className="text-xs font-bold text-neutral-500 dark:text-neutral-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors px-3 py-2 rounded-none hover:bg-white/50 dark:hover:bg-neutral-700/50 uppercase tracking-wider"
-            >
-              New Chat
-            </button>
-          )}
         </div>
       </div>
 
@@ -167,7 +115,7 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
         <div className="flex-1 flex flex-col overflow-hidden">
           <div
             ref={messagesContainerRef}
-            className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 space-y-6 scroll-smooth bg-transparent z-10"
+            className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 space-y-5 scroll-smooth bg-transparent z-10"
           >
             <AnimatePresence>
               {messages.length === 0 ? (
@@ -175,51 +123,52 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -15 }}
-                  className="h-full flex flex-col items-center justify-center text-center max-w-2xl mx-auto space-y-6 py-8"
+                  className="h-full flex flex-col items-center justify-center text-center w-full max-w-none space-y-5 py-6"
                 >
-                  <div className="w-16 h-16 glass-panel-strong rounded-none flex items-center justify-center z-10 shadow-lg">
-                    <Sparkles className="text-primary-500 w-8 h-8" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-neutral-900 dark:text-white">Discover Your Style</h3>
-                    <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2 leading-relaxed">
-                      Tell me about the occasion or style you're looking for, and I'll curate the perfect look for you.
-                    </p>
-                  </div>
-
-                  {/* Quick Actions */}
-                  <div className="w-full space-y-3">
-                    <p className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                      Pick an occasion
-                    </p>
-                    <div className="flex flex-wrap gap-2 justify-center">
-                      {occasionPresets.map((preset, idx) => {
-                        const Icon = getIconForPreset(preset.icon);
-                        return (
-                          <motion.button
-                            key={idx}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => handleSend(`Style a ${preset.category} outfit`)}
-                            className="glass-panel-subtle px-4 py-3 rounded-none text-xs font-semibold text-neutral-700 dark:text-neutral-200 hover:bg-white dark:hover:bg-neutral-700 hover:shadow-md transition-all flex items-center gap-2 border border-neutral-200 dark:border-neutral-700"
-                          >
-                            <Icon className="w-4 h-4" />
-                            {preset.label}
-                          </motion.button>
-                        );
-                      })}
+                  <div className="w-full glass-panel-subtle border border-white/6 rounded-lg px-4 py-3">
+                    <div className="grid grid-cols-7 gap-2 w-full">
+                      {occasionPresets.map((preset, idx) => (
+                        <motion.button
+                          key={idx}
+                          whileHover={{ scale: 1.03 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => {
+                            setActiveOccasion(preset.category);
+                            handleSend(`Style a ${preset.category} outfit`);
+                          }}
+                          className={`w-full px-2 py-2 rounded-lg text-[10px] sm:text-xs font-semibold transition-all border whitespace-nowrap min-w-0 text-center ${
+                            activeOccasion === preset.category
+                              ? 'bg-primary-500 text-white border-primary-400/20 shadow-[0_10px_24px_rgba(244,114,182,0.25)]'
+                              : 'bg-slate-900/80 text-white/75 border-white/8 hover:bg-slate-800 hover:text-white'
+                          }`}
+                        >
+                          {preset.label}
+                        </motion.button>
+                      ))}
                     </div>
                   </div>
 
+                  <div>
+                    <h3 className="font-display-serif text-4xl sm:text-5xl font-semibold tracking-tight text-white leading-none">
+                      Discover Your Style
+                    </h3>
+                    <p className="mx-auto mt-3 max-w-2xl text-sm sm:text-base text-white/58 leading-7">
+                      Tell me about the occasion, preferred style, and budget, and I'll curate outfits tailored just for you.
+                    </p>
+                  </div>
+
                   {/* Budget Slider */}
-                  <div className="w-full glass-panel-subtle rounded-none p-4 border border-neutral-200 dark:border-neutral-700">
-                    <p className="text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-3 flex items-center gap-2">
-                      Budget Range
-                      <span className="ml-auto text-primary-500 font-bold">
+                  <div className="w-full glass-panel-subtle rounded-lg p-5 border border-white/6">
+                    <div className="flex items-center justify-between gap-4 mb-4">
+                      <div>
+                        <p className="text-[10px] uppercase tracking-[0.28em] text-white/45">Budget Range</p>
+                        <p className="mt-1 text-sm text-white/65">Set your preferred price window</p>
+                      </div>
+                      <span className="text-sm font-semibold text-primary-400">
                         ₹{minBudget.toLocaleString()} - ₹{maxBudget.toLocaleString()}
                       </span>
-                    </p>
-                    <div className="space-y-2">
+                    </div>
+                    <div className="space-y-3">
                       <input
                         type="range"
                         min="0"
@@ -227,7 +176,7 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
                         step="500"
                         value={minBudget}
                         onChange={(e) => setMinBudget(Number(e.target.value))}
-                        className="w-full h-2 bg-neutral-200 dark:bg-neutral-700 rounded-none appearance-none cursor-pointer accent-primary-500"
+                        className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary-500"
                       />
                       <input
                         type="range"
@@ -236,13 +185,13 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
                         step="500"
                         value={maxBudget}
                         onChange={(e) => setMaxBudget(Number(e.target.value))}
-                        className="w-full h-2 bg-neutral-200 dark:bg-neutral-700 rounded-none appearance-none cursor-pointer accent-primary-500"
+                        className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary-500"
                       />
                     </div>
                   </div>
                 </motion.div>
               ) : (
-                <div className="space-y-6 pb-4">
+                <div className="space-y-5 pb-4">
                   {messages.map((msg, idx) => (
                     <MessageBubble
                       key={idx}
@@ -259,8 +208,8 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
           </div>
 
           {/* Input Area */}
-          <div className="px-4 sm:px-6 py-4 border-t border-white/30 dark:border-neutral-700/50 bg-white/40 dark:bg-neutral-800/40 backdrop-blur-xl flex-shrink-0 z-10">
-            <div className="flex items-center gap-3">
+          <div className="px-4 sm:px-6 pb-4 -mt-2 flex-shrink-0 z-20">
+            <div className="flex items-center gap-3 bg-slate-900/95 border border-white/6 rounded-lg px-3 sm:px-4 py-3.5 shadow-[0_14px_30px_rgba(0,0,0,0.24)]">
               <div className="relative flex-1">
                 <input
                   type="text"
@@ -268,7 +217,7 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                   placeholder="Describe your perfect outfit"
-                  className="w-full bg-white/70 dark:bg-neutral-700/70 backdrop-blur-sm border border-neutral-200 dark:border-neutral-600 rounded-none py-4 px-5 text-sm text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 focus:bg-white dark:focus:bg-neutral-700 focus:border-primary-300 dark:focus:border-primary-500 outline-none transition-all"
+                  className="w-full bg-white/4 border border-white/8 rounded-lg py-4 px-5 text-sm text-white placeholder-white/35 focus:bg-white/6 focus:border-primary-400/35 outline-none transition-all"
                 />
               </div>
 
@@ -277,13 +226,13 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
                 whileTap={{ scale: 0.95 }}
                 onClick={() => handleSend()}
                 disabled={!input.trim()}
-                className={`h-12 w-12 rounded-none transition-all flex items-center justify-center flex-shrink-0 ${
+                className={`h-14 w-14 rounded-lg transition-all flex items-center justify-center flex-shrink-0 text-xs font-semibold uppercase tracking-[0.18em] ${
                   input.trim()
-                    ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/25 hover:from-primary-600 hover:to-primary-700'
-                    : 'bg-neutral-200 dark:bg-neutral-700 text-neutral-400 dark:text-neutral-500 cursor-not-allowed'
+                    ? 'bg-primary-500 text-white shadow-[0_10px_24px_rgba(244,114,182,0.25)] hover:bg-primary-400'
+                    : 'bg-white/5 text-white/30 cursor-not-allowed border border-white/6'
                 }`}
               >
-                <Send className="w-5 h-5" />
+                Send
               </motion.button>
             </div>
           </div>
@@ -297,52 +246,50 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
               animate={{ width: '320px', opacity: 1 }}
               exit={{ width: 0, opacity: 0 }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="bg-white/80 dark:bg-neutral-800/80 backdrop-blur-xl border-l border-neutral-200 dark:border-neutral-700 flex-shrink-0 overflow-hidden"
+              className="bg-slate-900/96 border-l border-white/6 flex-shrink-0 overflow-hidden"
             >
               <div className="h-full flex flex-col">
-                <div className="p-4 border-b border-neutral-200 dark:border-neutral-700 flex items-center justify-between">
-                  <h3 className="font-bold text-neutral-900 dark:text-white flex items-center gap-2">
-                    <Heart className="w-5 h-5 text-primary-500" />
+                <div className="p-4 border-b border-white/6 flex items-center justify-between">
+                  <h3 className="font-semibold text-white uppercase tracking-[0.22em] text-xs">
                     Shortlist
                   </h3>
                   <button
                     onClick={() => setShowShortlist(false)}
-                    className="p-1.5 rounded-none hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+                    className="px-3 py-2 rounded-lg text-xs font-semibold uppercase tracking-[0.18em] text-white/70 bg-white/5 hover:bg-white/10 transition-colors"
                   >
-                    <X className="w-5 h-5 text-neutral-500 dark:text-neutral-400" />
+                    Close
                   </button>
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-4">
                   {shortlistedItems.length === 0 ? (
-                    <div className="h-full flex flex-col items-center justify-center text-center text-neutral-500 dark:text-neutral-400 space-y-2">
-                      <Heart className="w-12 h-12 opacity-30" />
+                    <div className="h-full flex flex-col items-center justify-center text-center text-white/45 space-y-2">
                       <p className="text-sm">No items shortlisted yet</p>
-                      <p className="text-xs">Click the heart icon on items to save them here</p>
+                      <p className="text-xs">Save items to compare them here</p>
                     </div>
                   ) : (
                     <div className="space-y-4">
                       {shortlistedItems.map((item) => (
                         <div
                           key={item.id}
-                          className="flex gap-3 p-3 bg-neutral-50 dark:bg-neutral-700/50 rounded-none border border-neutral-200 dark:border-neutral-600"
+                          className="flex gap-3 p-3 bg-white/4 rounded-lg border border-white/6"
                         >
                           <img
                             src={item.image}
                             alt={item.name}
-                            className="w-16 h-20 object-cover rounded-none"
+                            className="w-16 h-20 object-cover rounded-lg"
                           />
                           <div className="flex-1 min-w-0">
-                            <h4 className="text-sm font-semibold text-neutral-900 dark:text-white line-clamp-2">
+                            <h4 className="text-sm font-semibold text-white line-clamp-2">
                               {item.name}
                             </h4>
-                            <p className="text-primary-500 font-bold text-sm mt-1">{item.price}</p>
+                            <p className="text-primary-400 font-bold text-sm mt-1">{item.price}</p>
                           </div>
                           <button
                             onClick={() => handleToggleShortlist(item)}
-                            className="self-start p-1.5 rounded-none hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors"
+                            className="self-start px-3 py-2 rounded-lg text-xs font-semibold uppercase tracking-[0.16em] text-white/65 bg-white/5 hover:bg-white/10 transition-colors"
                           >
-                            <X className="w-4 h-4 text-neutral-500 dark:text-neutral-400" />
+                            Remove
                           </button>
                         </div>
                       ))}
@@ -351,8 +298,8 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
                 </div>
 
                 {shortlistedItems.length >= 2 && (
-                  <div className="p-4 border-t border-neutral-200 dark:border-neutral-700">
-                    <button className="w-full bg-gradient-to-br from-primary-500 to-primary-600 text-white py-3 rounded-none font-bold text-sm hover:from-primary-600 hover:to-primary-700 transition-all shadow-md">
+                  <div className="p-4 border-t border-white/6">
+                    <button className="w-full bg-primary-500 text-white py-3 rounded-lg font-semibold text-sm hover:bg-primary-400 transition-all shadow-[0_10px_24px_rgba(244,114,182,0.22)]">
                       Compare {shortlistedItems.length} Items
                     </button>
                   </div>

@@ -19,7 +19,7 @@ const MessageBubble = ({ message, onToggleShortlist, shortlistedItems, onFollowU
     >
       <div className={`flex gap-3.5 w-full ${isAI ? 'flex-row' : 'flex-row-reverse'}`}>
         {/* Avatar */}
-        <div className={`w-10 h-10 rounded-none flex-shrink-0 flex items-center justify-center mt-1 text-xs font-bold select-none shadow-md border ${
+        <div className={`w-10 h-10 rounded-lg flex-shrink-0 flex items-center justify-center mt-1 text-xs font-bold select-none shadow-md border ${
           isAI
             ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white border-primary-600'
             : 'bg-gradient-to-br from-neutral-200 to-neutral-300 dark:from-neutral-600 dark:to-neutral-700 text-neutral-700 dark:text-neutral-200 border-neutral-300 dark:border-neutral-600'
@@ -29,7 +29,7 @@ const MessageBubble = ({ message, onToggleShortlist, shortlistedItems, onFollowU
 
         <div className="flex flex-col gap-3 flex-1 max-w-[calc(100%-3.5rem)]">
           {/* Message Content */}
-          <div className={`px-5 py-4 rounded-none text-sm leading-relaxed shadow-soft w-fit border ${
+          <div className={`px-5 py-4 rounded-lg text-sm leading-relaxed shadow-soft w-fit border ${
             isAI
               ? 'bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-neutral-100'
               : 'bg-primary-500 border-primary-600 text-white ml-auto'
@@ -87,7 +87,7 @@ const MessageBubble = ({ message, onToggleShortlist, shortlistedItems, onFollowU
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => onFollowUp && onFollowUp(suggestion)}
-                  className="px-4 py-2 text-xs font-semibold rounded-none bg-neutral-100 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 hover:bg-primary-100 dark:hover:bg-primary-500 hover:text-primary-600 dark:hover:text-white transition-all border border-neutral-200 dark:border-neutral-600"
+                  className="px-4 py-2 text-xs font-semibold rounded-lg bg-white/5 text-white/75 hover:bg-white/10 hover:text-white transition-all border border-white/8"
                 >
                   {suggestion}
                 </motion.button>
@@ -101,7 +101,7 @@ const MessageBubble = ({ message, onToggleShortlist, shortlistedItems, onFollowU
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-neutral-50 dark:bg-neutral-800/50 border-l-4 border-l-primary-500 border border-neutral-200 dark:border-neutral-700 p-4 rounded-none text-sm text-neutral-800 dark:text-neutral-200"
+              className="bg-white/4 border-l-4 border-l-primary-500 border border-white/6 p-4 rounded-lg text-sm text-white/82"
             >
               <span className="font-bold text-primary-500 block mb-1 uppercase tracking-wider text-xs">
                 Styling Tip
