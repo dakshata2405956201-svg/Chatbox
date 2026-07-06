@@ -20,9 +20,9 @@ const SuggestionCards = ({ onSelect }) => {
             transition={{ delay: 0.1 * index }}
             whileHover={{ y: -5, boxShadow: '0 10px 25px -5px rgba(255, 63, 108, 0.1)' }}
             onClick={() => onSelect(action.title)}
-            className="p-6 bg-slate-900/95 border border-white/6 rounded-lg text-left hover:bg-slate-800 transition-all group shadow-[0_8px_24px_rgba(0,0,0,0.2)]"
+            className="p-6 bg-slate-900/95 border border-white/6 rounded-none text-left hover:bg-slate-800 transition-all group shadow-[0_8px_24px_rgba(0,0,0,0.2)]"
           >
-            <div className="w-10 h-10 bg-primary-500/15 rounded-lg flex items-center justify-center mb-4 text-[10px] font-bold tracking-[0.2em] text-primary-300 group-hover:bg-primary-500 group-hover:text-white transition-colors">
+            <div className="w-10 h-10 bg-primary-500/15 rounded-none flex items-center justify-center mb-4 text-[10px] font-bold tracking-[0.2em] text-primary-300 group-hover:bg-primary-500 group-hover:text-white transition-colors">
               {badge}
             </div>
             <h3 className="font-semibold text-white text-sm lg:text-base">{action.title}</h3>

@@ -10,8 +10,6 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
   const [isTyping, setIsTyping] = useState(false);
   const [shortlistedItems, setShortlistedItems] = useState([]);
   const [showShortlist, setShowShortlist] = useState(false);
-  const [showOccasions, setShowOccasions] = useState(false);
-  const [activeOccasion, setActiveOccasion] = useState(occasionPresets[0]?.category || 'Farewell');
   const [budgetValue, setBudgetValue] = useState(10000);
   const messagesContainerRef = useRef(null);
 
@@ -96,13 +94,13 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowShortlist(!showShortlist)}
-            className="px-3 py-2 rounded-lg bg-white/5 text-xs font-semibold uppercase tracking-[0.2em] text-white/75 border border-white/8 hover:bg-white/10 transition-all"
+            className="px-3 py-2 rounded-none bg-white/5 text-xs font-semibold uppercase tracking-[0.2em] text-white/75 border border-white/8 hover:bg-white/10 transition-all"
           >
             Saved {shortlistedItems.length > 0 ? `(${shortlistedItems.length})` : ''}
           </button>
           <button
             onClick={() => setMessages([])}
-            className="px-3 py-2 rounded-lg bg-primary-500 text-xs font-semibold uppercase tracking-[0.2em] text-white shadow-[0_10px_24px_rgba(244,114,182,0.22)] hover:bg-primary-400 transition-all"
+            className="px-3 py-2 rounded-none bg-primary-500 text-xs font-semibold uppercase tracking-[0.2em] text-white shadow-[0_10px_24px_rgba(244,114,182,0.22)] hover:bg-primary-400 transition-all"
           >
             New Chat
           </button>
@@ -120,90 +118,42 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
             <AnimatePresence>
               {messages.length === 0 ? (
                 <motion.div
-                  initial={{ opacity: 0, y: 15 }}
+                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -15 }}
-                  className="h-full w-full max-w-none py-2"
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  className="h-full w-full max-w-none py-8 flex flex-col items-center justify-center"
                 >
-                  <div className="text-center lg:text-left">
-                    <div className="mb-4 flex justify-center lg:justify-start">
-                      <button
-                        type="button"
-                        onClick={() => setShowOccasions((prev) => !prev)}
-                        className="rounded-full border border-white/8 bg-white/4 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/70 transition-all hover:bg-white/8 hover:text-white"
-                      >
-                        {showOccasions ? 'Hide occasions' : 'Pick an occasion'}
-                      </button>
-                    </div>
+                  <div className="text-center w-full max-w-4xl px-4">
+                    {/* Decorative element */}
+                    <div className="mx-auto w-20 h-1 bg-gradient-to-r from-transparent via-primary-400 to-transparent mb-8 opacity-60"></div>
+                    
+                    <h3 className="font-display-serif text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-white leading-tight mb-4">
+                      Ask StyleMate AI anything...
+                    </h3>
+                    <p className="mx-auto mt-4 max-w-2xl text-sm sm:text-base lg:text-lg text-white/60 leading-relaxed">
+                      Need an outfit? Colour Matching? Accessories? I've got you.
+                    </p>
 
-                    <div className="grid gap-5 lg:grid-cols-[260px_minmax(0,1fr)] lg:items-start">
-                      <AnimatePresence initial={false}>
-                        {showOccasions && (
-                          <motion.div
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -10 }}
-                            className="glass-panel-subtle border border-white/6 rounded-lg px-4 py-4 text-left lg:sticky lg:top-4"
-                          >
-                            <div className="mb-4">
-                              <p className="text-[10px] uppercase tracking-[0.28em] text-white/45">Pick an occasion</p>
-                              <p className="mt-1 text-sm text-white/55">Choose one style context</p>
-                            </div>
-
-                            <div className="flex flex-col gap-2">
-                              {occasionPresets.map((preset, idx) => (
-                                <motion.button
-                                  key={idx}
-                                  whileHover={{ scale: 1.03 }}
-                                  whileTap={{ scale: 0.98 }}
-                                  onClick={() => {
-                                    setActiveOccasion(preset.category);
-                                    handleSend(`Style a ${preset.category} outfit`);
-                                    setShowOccasions(false);
-                                  }}
-                                  className={`w-full rounded-lg px-4 py-3 text-[10px] sm:text-xs font-semibold transition-all border text-left ${
-                                    activeOccasion === preset.category
-                                      ? 'bg-primary-500 text-white border-primary-400/20 shadow-[0_10px_24px_rgba(244,114,182,0.25)]'
-                                      : 'bg-white/4 text-white/72 border-white/8 hover:bg-white/8 hover:text-white'
-                                  }`}
-                                >
-                                  {preset.label}
-                                </motion.button>
-                              ))}
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-
-                      <div>
-                      <h3 className="font-display-serif text-4xl sm:text-5xl font-semibold tracking-tight text-white leading-none">
-                        Discover Your Style
-                      </h3>
-                      <p className="mx-auto lg:mx-0 mt-3 max-w-2xl text-sm sm:text-base text-white/58 leading-7">
-                        Share the occasion, preferred style, and budget, and I’ll curate refined outfit recommendations tailored to you.
-                      </p>
-
-                      {/* Budget Controls */}
-                      <div className="mt-5 max-w-xl">
-                        <div className="flex items-center justify-between gap-4 mb-2">
-                          <p className="text-[10px] uppercase tracking-[0.28em] text-white/45">Budget Range</p>
-                          <p className="text-sm font-semibold text-primary-400">
-                            Up to ₹{budgetValue.toLocaleString()}
-                          </p>
-                        </div>
-
-                        <input
-                          type="range"
-                          min="0"
-                          max="50000"
-                          step="500"
-                          value={budgetValue}
-                          onChange={(e) => setBudgetValue(Number(e.target.value))}
-                          className="budget-range w-full"
-                          aria-label="Budget range"
-                        />
+                    {/* Budget Controls */}
+                    <div className="mt-10 max-w-2xl mx-auto">
+                      <div className="flex items-center justify-between gap-4 mb-3 px-1">
+                        <p className="text-xs font-medium tracking-[0.3em] uppercase text-white/50">Budget Range</p>
+                        <p className="text-sm font-semibold text-primary-400">
+                          Up to ₹{budgetValue.toLocaleString()}
+                        </p>
                       </div>
-                    </div>
+
+                      <input
+                        type="range"
+                        min="0"
+                        max="50000"
+                        step="500"
+                        value={budgetValue}
+                        onChange={(e) => setBudgetValue(Number(e.target.value))}
+                        className="budget-range w-full"
+                        aria-label="Budget range"
+                      />
                     </div>
                   </div>
                 </motion.div>
@@ -225,28 +175,28 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
           </div>
 
           {/* Input Area */}
-          <div className="px-4 sm:px-6 pb-4 -mt-2 flex-shrink-0 z-20">
-            <div className="flex items-center gap-3 bg-slate-900/95 border border-white/6 rounded-lg px-3 sm:px-4 py-3.5 shadow-[0_14px_30px_rgba(0,0,0,0.24)]">
+          <div className="px-4 sm:px-6 pb-6 pt-2 flex-shrink-0 z-20">
+            <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-none px-5 sm:px-6 py-4 shadow-[0_10px_40px_rgba(0,0,0,0.15)] hover:shadow-[0_12px_45px_rgba(0,0,0,0.2)] transition-shadow duration-300">
               <div className="relative flex-1">
                 <input
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                  placeholder="Describe your perfect outfit"
-                  className="w-full bg-white/4 border border-white/8 rounded-lg py-4 px-5 text-sm text-white placeholder-white/35 focus:bg-white/6 focus:border-primary-400/35 outline-none transition-all"
+                  placeholder="Describe your perfect outfit..."
+                  className="w-full bg-transparent border-0 py-2.5 px-0 text-base sm:text-lg text-white placeholder-white/40 focus:ring-0 outline-none transition-all"
                 />
               </div>
 
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={() => handleSend()}
                 disabled={!input.trim()}
-                className={`h-14 w-14 rounded-lg transition-all flex items-center justify-center flex-shrink-0 text-xs font-semibold uppercase tracking-[0.18em] ${
+                className={`h-12 w-auto px-6 sm:px-7 rounded-none transition-all flex items-center justify-center flex-shrink-0 text-sm sm:text-base font-semibold uppercase tracking-[0.16em] ${
                   input.trim()
-                    ? 'bg-primary-500 text-white shadow-[0_10px_24px_rgba(244,114,182,0.25)] hover:bg-primary-400'
-                    : 'bg-white/5 text-white/30 cursor-not-allowed border border-white/6'
+                    ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-[0_6px_16px_rgba(244,114,182,0.3)] hover:from-primary-600 hover:to-primary-700 hover:shadow-[0_8px_20px_rgba(244,114,182,0.35)]'
+                    : 'bg-white/10 text-white/40 cursor-not-allowed border border-white/10'
                 }`}
               >
                 Send
@@ -272,7 +222,7 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
                   </h3>
                   <button
                     onClick={() => setShowShortlist(false)}
-                    className="px-3 py-2 rounded-lg text-xs font-semibold uppercase tracking-[0.18em] text-white/70 bg-white/5 hover:bg-white/10 transition-colors"
+                    className="px-3 py-2 rounded-none text-xs font-semibold uppercase tracking-[0.18em] text-white/70 bg-white/5 hover:bg-white/10 transition-colors"
                   >
                     Close
                   </button>
@@ -289,12 +239,12 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
                       {shortlistedItems.map((item) => (
                         <div
                           key={item.id}
-                          className="flex gap-3 p-3 bg-white/4 rounded-lg border border-white/6"
+                          className="flex gap-3 p-3 bg-white/4 rounded-none border border-white/6"
                         >
                           <img
                             src={item.image}
                             alt={item.name}
-                            className="w-16 h-20 object-cover rounded-lg"
+                            className="w-16 h-20 object-cover rounded-none"
                           />
                           <div className="flex-1 min-w-0">
                             <h4 className="text-sm font-semibold text-white line-clamp-2">
@@ -304,7 +254,7 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
                           </div>
                           <button
                             onClick={() => handleToggleShortlist(item)}
-                            className="self-start px-3 py-2 rounded-lg text-xs font-semibold uppercase tracking-[0.16em] text-white/65 bg-white/5 hover:bg-white/10 transition-colors"
+                            className="self-start px-3 py-2 rounded-none text-xs font-semibold uppercase tracking-[0.16em] text-white/65 bg-white/5 hover:bg-white/10 transition-colors"
                           >
                             Remove
                           </button>
@@ -316,7 +266,7 @@ const ChatBox = ({ darkMode, toggleDarkMode }) => {
 
                 {shortlistedItems.length >= 2 && (
                   <div className="p-4 border-t border-white/6">
-                    <button className="w-full bg-primary-500 text-white py-3 rounded-lg font-semibold text-sm hover:bg-primary-400 transition-all shadow-[0_10px_24px_rgba(244,114,182,0.22)]">
+                    <button className="w-full bg-primary-500 text-white py-3 rounded-none font-semibold text-sm hover:bg-primary-400 transition-all shadow-[0_10px_24px_rgba(244,114,182,0.22)]">
                       Compare {shortlistedItems.length} Items
                     </button>
                   </div>

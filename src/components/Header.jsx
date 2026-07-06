@@ -14,18 +14,18 @@ const Header = ({ darkMode, toggleDarkMode }) => {
           <input
             type="text"
             placeholder="Search your styles..."
-            className="bg-white/5 border border-white/8 rounded-lg py-2.5 px-4 w-72 text-sm text-white placeholder-white/35 focus:ring-1 focus:ring-primary-400/30 transition-all outline-none"
+            className="bg-white/5 border border-white/8 rounded-none py-2.5 px-4 w-72 text-sm text-white placeholder-white/35 focus:ring-1 focus:ring-primary-400/30 transition-all outline-none"
           />
         </div>
 
         <div className="flex items-center gap-3 border-l border-white/8 pl-4 ml-1">
           <button
             onClick={toggleDarkMode}
-            className="px-3 py-2 rounded-lg text-xs font-semibold uppercase tracking-[0.22em] text-white/75 bg-white/5 hover:bg-white/10 transition-colors"
+            className="px-3 py-2 rounded-none text-xs font-semibold uppercase tracking-[0.22em] text-white/75 bg-white/5 hover:bg-white/10 transition-colors"
           >
             Theme
           </button>
-          <button className="px-3 py-2 rounded-lg text-xs font-semibold uppercase tracking-[0.22em] text-white/75 bg-white/5 hover:bg-white/10 transition-colors">
+          <button className="px-3 py-2 rounded-none text-xs font-semibold uppercase tracking-[0.22em] text-white/75 bg-white/5 hover:bg-white/10 transition-colors">
             Saved
           </button>
           <div className="flex items-center gap-3 border-l border-white/8 pl-4 ml-1">
@@ -35,7 +35,7 @@ const Header = ({ darkMode, toggleDarkMode }) => {
             </div>
             <motion.div
               whileHover={{ scale: 1.03 }}
-              className="h-10 w-10 rounded-lg bg-white/8 border border-white/8 flex items-center justify-center overflow-hidden cursor-pointer"
+              className="h-10 w-10 rounded-none bg-white/8 border border-white/8 flex items-center justify-center overflow-hidden cursor-pointer"
             >
               <img
                 src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=60"

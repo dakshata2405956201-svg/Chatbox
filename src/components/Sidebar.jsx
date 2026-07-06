@@ -68,7 +68,7 @@ const Sidebar = ({ darkMode, width, onWidthChange }) => {
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="w-full bg-primary-500 text-white py-3 rounded-lg flex items-center justify-center font-semibold shadow-[0_10px_24px_rgba(244,114,182,0.25)] hover:bg-primary-400 transition-all"
+          className="w-full bg-primary-500 text-white py-3 rounded-none flex items-center justify-center font-semibold shadow-[0_10px_24px_rgba(244,114,182,0.25)] hover:bg-primary-400 transition-all"
         >
           <span>New Chat</span>
         </motion.button>
@@ -77,7 +77,7 @@ const Sidebar = ({ darkMode, width, onWidthChange }) => {
       <nav className="flex-1 px-4 mt-8 space-y-2">
         <div className="text-[10px] font-semibold text-white/40 uppercase tracking-[0.3em] mb-3 px-2">Menu</div>
 
-        <button className="w-full flex items-center gap-3 px-3.5 py-2.5 text-white bg-primary-500/18 rounded-lg font-medium transition-all text-left min-w-0 border border-primary-500/15 shadow-[0_8px_20px_rgba(0,0,0,0.12)]">
+        <button className="w-full flex items-center gap-3 px-3.5 py-2.5 text-white bg-primary-500/18 rounded-none font-medium transition-all text-left min-w-0 border border-primary-500/15 shadow-[0_8px_20px_rgba(0,0,0,0.12)]">
           <span>Assistant</span>
         </button>
 
@@ -85,13 +85,13 @@ const Sidebar = ({ darkMode, width, onWidthChange }) => {
           <motion.button
             key={index}
             whileHover={{ x: 4, backgroundColor: darkMode ? 'rgba(64,64,64,0.4)' : 'rgba(255,255,255,0.4)' }}
-            className="w-full flex items-center gap-3 px-3.5 py-2.5 text-white/65 hover:text-white rounded-lg font-medium transition-all text-left min-w-0 hover:bg-white/4"
+            className="w-full flex items-center gap-3 px-3.5 py-2.5 text-white/65 hover:text-white rounded-none font-medium transition-all text-left min-w-0 hover:bg-white/4"
           >
             <span className="break-words whitespace-normal">{item.label}</span>
           </motion.button>
         ))}
 
-        <div className="mt-5 rounded-lg glass-panel-subtle p-4 border border-white/5">
+        <div className="mt-5 rounded-none glass-panel-subtle p-4 border border-white/5">
           <div className="text-[10px] uppercase tracking-[0.34em] text-primary-400 font-semibold">StyleMate Pro</div>
           <div className="mt-3 text-sm font-semibold text-white leading-6 max-w-full break-words whitespace-normal">Unlock limitless style possibilities</div>
           <ul className="mt-3 space-y-2 text-xs text-white/55">
@@ -99,15 +99,15 @@ const Sidebar = ({ darkMode, width, onWidthChange }) => {
             <li>Early access to trends</li>
             <li>Unlimited chats</li>
           </ul>
-          <button className="mt-4 w-full rounded-lg bg-neutral-950 py-3 text-xs font-semibold uppercase tracking-[0.26em] text-white transition-all hover:bg-neutral-900 border border-white/5">
+          <button className="mt-4 w-full rounded-none bg-neutral-950 py-3 text-xs font-semibold uppercase tracking-[0.26em] text-white transition-all hover:bg-neutral-900 border border-white/5">
             Upgrade Now
           </button>
         </div>
       </nav>
 
       <div className="p-4 border-t border-white/5">
-        <div className="rounded-lg glass-panel-subtle p-3 flex items-center gap-3 border border-white/5">
-          <div className="h-11 w-11 rounded-lg overflow-hidden border border-white/5">
+        <div className="rounded-none glass-panel-subtle p-3 flex items-center gap-3 border border-white/5">
+          <div className="h-11 w-11 rounded-none overflow-hidden border border-white/5">
             <img
               src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=60"
               alt="Profile"
