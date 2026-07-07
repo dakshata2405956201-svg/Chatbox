@@ -9,7 +9,7 @@ import connectDB from './config/db.js';
 import errorHandler from './middleware/errorHandler.middleware.js';
 import handleSocketConnection from './sockets/socketHandler.js';
 import authRoutes from './routes/auth.routes.js';
-import conversationRoutes from './routes/conversation.routes.js';
+import chatRoutes from './routes/chat.routes.js';
 
 dotenv.config();
 
@@ -42,7 +42,7 @@ app.get('/', (req, res) => {
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/conversations', conversationRoutes);
+app.use('/api/chats', chatRoutes);
 
 // Socket.io setup
 handleSocketConnection(io);

@@ -1,18 +1,17 @@
-
 import mongoose from 'mongoose';
 
 const messageSchema = new mongoose.Schema({
-  conversationId: {
+  chat: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Conversation',
+    ref: 'Chat',
     required: true,
   },
-  sender: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+  role: {
+    type: String,
+    enum: ['user', 'assistant'],
     required: true,
   },
-  text: {
+  content: {
     type: String,
     required: true,
   },
