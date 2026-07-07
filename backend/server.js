@@ -10,6 +10,7 @@ import errorHandler from './middleware/errorHandler.middleware.js';
 import handleSocketConnection from './sockets/socketHandler.js';
 import authRoutes from './routes/auth.routes.js';
 import chatRoutes from './routes/chat.routes.js';
+import messageRoutes from './routes/message.routes.js';
 
 dotenv.config();
 
@@ -43,6 +44,7 @@ app.get('/', (req, res) => {
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/chats', chatRoutes);
+app.use('/api/messages', messageRoutes);
 
 // Socket.io setup
 handleSocketConnection(io);
