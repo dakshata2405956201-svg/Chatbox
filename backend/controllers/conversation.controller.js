@@ -17,6 +17,23 @@ const createConversation = async (req, res) => {
       });
     }
 
+    // Prevent creating a conversation with yourself
+    if (senderId.toString() === recipientId.toString()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Cannot create a conversation with yourself',
+      });
+    }
+
+    // Verify the recipient user exists
+    const recipientUser = await User.findById(recipientId);
+    if (!recipientUser) {
+      return res.status(404).json({
+        success: false,
+        message: 'Recipient user not found',
+      });
+    }
+
     // Check if conversation already exists
     let conversation = await Conversation.findOne({
       participants: { $all: [senderId, recipientId] },

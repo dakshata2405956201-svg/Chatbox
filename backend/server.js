@@ -9,6 +9,7 @@ import connectDB from './config/db.js';
 import errorHandler from './middleware/errorHandler.middleware.js';
 import handleSocketConnection from './sockets/socketHandler.js';
 import authRoutes from './routes/auth.routes.js';
+import conversationRoutes from './routes/conversation.routes.js';
 
 dotenv.config();
 
@@ -39,8 +40,9 @@ app.get('/', (req, res) => {
   });
 });
 
-// Auth routes
+// Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/conversations', conversationRoutes);
 
 // Socket.io setup
 handleSocketConnection(io);
