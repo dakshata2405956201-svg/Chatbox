@@ -8,10 +8,15 @@
     "start": "node server.js",
     "dev": "nodemon server.js"
   },
-  "keywords": ["chat", "mern", "socket.io"],
+  "keywords": [
+    "chat",
+    "mern",
+    "socket.io"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",

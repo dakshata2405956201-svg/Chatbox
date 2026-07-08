@@ -11,6 +11,7 @@ import handleSocketConnection from './sockets/socketHandler.js';
 import authRoutes from './routes/auth.routes.js';
 import chatRoutes from './routes/chat.routes.js';
 import messageRoutes from './routes/message.routes.js';
+import testRoutes from './routes/test.routes.js';
 
 dotenv.config();
 
@@ -45,6 +46,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/chats', chatRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/test-ai', testRoutes);
 
 // Socket.io setup
 handleSocketConnection(io);
